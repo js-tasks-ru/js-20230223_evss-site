@@ -2,11 +2,10 @@ export default class ColumnChart {
   constructor({
     data = [],
     label = "",
-    value = "",
+    value = 0,
     link = "",
-    formatHeading = (str) => {
-      return new Intl.NumberFormat('ru-RU').format(str);
-    }
+    formatHeading = str=> str
+    
   } = {}) {
     this.data = data;
     this.label = label;
@@ -20,10 +19,10 @@ export default class ColumnChart {
   chartHeight = 50;
   dataElements = {};
 
-Title() {
-  return `<div class="column-chart__title">Total ${this.label} ${this.Link()}</div>`;
+title() {
+  return `<div class="column-chart__title">Total ${this.label} ${this.linkTemplate()}</div>`;
 }
-Container() {
+container() {
   return `
   <div class="column-chart__container">
     <div data-element="header" class="column-chart__header">
@@ -31,45 +30,38 @@ Container() {
     </div>
 
     <div data-element="body" class="column-chart__chart">
-      ${this.ColsTemplate()}
+      ${this.colsTemplate()}
     </div>
   </div>`;
 
 }
 
-Template() {
-  return  this.Wrapper([this.Title(), this.Container()]);
-   
-}
-
-Wrapper(child){
+template() {
   const columnChartClasses = (this.data.length > 0) ? "column-chart" : "column-chart column-chart_loading";
-  return `
-      <div class="${columnChartClasses}" style="--chart-height: ${this.chartHeight}">
-      ${child.map(elem => {
-        return elem;
-      }).join('')}     
-    </div>
-    `;
+
+ return `
+ <div class="${columnChartClasses}" style="--chart-height: ${this.chartHeight}">
+ ${this.title()}
+ ${this.container()}
+    </div> `;  
+
+
 }
 
-Link() {
-  if (!this.link) return "";
-  return `<a href="${this.link}" class="column-chart__link">View all</a>`;
+linkTemplate() {
+  return (this.link) ? `<a href="${this.link}" class="column-chart__link">View all</a>` : "";
 }
 
-ColsTemplate() {
+colsTemplate() {
   const colProps = this.getColumnProps();
-  let chartData = "";
-  for (const colProp of colProps) {
-    chartData += `<div style="--value: ${colProp.value}" data-tooltip="${colProp.percent}"></div>`;
-  }
-  return chartData;
+  return colProps.map(colProp => {
+    return `<div style="--value: ${colProp.value}" data-tooltip="${colProp.percent}"></div>`
+  }).join('');
 }
 
 render() {
   this.element = document.createElement("div");
-  const template = this.Template();
+  const template = this.template();
   this.element.innerHTML = template;
   this.element = this.element.firstElementChild;
   this.readSubElements();
@@ -77,7 +69,9 @@ render() {
 
 update(data) {
   this.data = data;
-  this.dataElements["body"].innerHTML = this.ColsTemplate();
+  // так, у меня не проходит тест    
+  //this.dataElement.body.innerHTML = this.colsTemplate();
+  this.dataElements["body"].innerHTML = this.colsTemplate();
 }
 
 readSubElements() {
@@ -92,7 +86,7 @@ readSubElements() {
 getColumnProps() {
   if (this.data === undefined) return [];
   const maxValue = Math.max(...this.data);
-  const scale = 50 / maxValue;
+  const scale = this.chartHeight / maxValue;
 
   return this.data.map(item => {
     return {
