@@ -69,9 +69,9 @@ render() {
 
 update(data) {
   this.data = data;
-  // так, у меня не проходит тест    
-  //this.dataElement.body.innerHTML = this.colsTemplate();
-  this.dataElements["body"].innerHTML = this.colsTemplate();
+     
+  this.dataElements.body.innerHTML = this.colsTemplate();
+ // this.dataElements["body"].innerHTML = this.colsTemplate();
 }
 
 readSubElements() {
