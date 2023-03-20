@@ -20,7 +20,7 @@ class Tooltip {
     this.element = document.createElement('div');
     this.element.className = 'tooltip';
     this.element.innerHTML = value;
-    let move = this.currentPosition.bind(this);
+    const move = this.getCurrentPosition.bind(this);
     document.body.addEventListener('pointermove', move);
     document.body.append(this.element);
   }
@@ -34,10 +34,10 @@ class Tooltip {
       return;
     }
     this.render(tooltipValue);
-    this.currentPosition(event);
+    this.getCurrentPosition(event);
   }
 
-  currentPosition(event){
+  getCurrentPosition(event){
     this.element.style.left = `${event.clientX}px`;
     this.element.style.top = `${event.clientY}px`;
   }
@@ -49,8 +49,8 @@ class Tooltip {
   }
 
   destroy() {  
-    document.removeEventListener('pointerover', this.onPointerover.bind(this));
-    document.removeEventListener('pointerout', this.onPointerout.bind(this));
+    document.removeEventListener('pointerover', this.onPointerover);
+    document.removeEventListener('pointerout', this.onPointerout);
     this.remove();
   }
 
