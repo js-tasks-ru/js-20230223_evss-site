@@ -54,7 +54,7 @@ linkTemplate() {
 
 colsTemplate() {
   const colProps = this.getColumnProps();
-  console.log("colProps: ", colProps);
+
   return colProps.map(colProp => {
     return `<div style="--value: ${colProp.value}" data-tooltip="${colProp.percent}"></div>`
   }).join('');
@@ -72,7 +72,7 @@ update(data) {
   this.data = data;
      
   this.dataElements.body.innerHTML = this.colsTemplate();
- // this.dataElements["body"].innerHTML = this.colsTemplate();
+
 }
 
 readSubElements() {
